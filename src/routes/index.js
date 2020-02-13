@@ -10,7 +10,13 @@ router.get("/:code", async (req, res) => {
     const url = await Url.findOne({ where: { urlCode: req.params.code } });
     console.log(url);
     if (url) {
-      return res.redirect(url.original_link);
+      res.setHeader("Content-Type", "text/html");
+      res.setHeader("Location", "www.google.com");
+      res.writeHead(301, {
+        "Content-Length": "0",
+        "Content-Type": "text/plain"
+      });
+      res.end("Ok");
     } else {
       return res.status(404).json("No url found");
     }
@@ -21,7 +27,8 @@ router.get("/:code", async (req, res) => {
 });
 
 router.post("/shorten", async (req, res) => {
-  const { original_link } = req.body;
+  const { url } = req.body;
+  console.log(url);
   const baseUrl = process.env.BASE_URL;
 
   // Check base url
@@ -33,26 +40,25 @@ router.post("/shorten", async (req, res) => {
   const urlCode = shortid.generate();
 
   // Check long url
-  if (validUrl.isUri(original_link)) {
+  if (validUrl.isUri(url)) {
+    console.log("valid url");
     try {
-      let url = await Url.findOne({ where: { original_link } });
+      let uri = await Url.findOne({ where: { original_link: url } });
 
-      if (url) {
-        res.json(url);
+      if (uri) {
+        res.json(ur);
       } else {
         const short_link = baseUrl + "/" + urlCode;
 
-        url = await Url.create({
-          original_link,
+        uri = await Url.create({
+          original_link: url,
           short_link,
           urlCode
         });
 
-        console.log(url);
-
         res.json({
-          original_link: url.original_link,
-          short_link: url.short_link
+          original_link: uri.original_link,
+          short_link: uri.short_link
         });
       }
     } catch (err) {
@@ -60,7 +66,7 @@ router.post("/shorten", async (req, res) => {
       res.status(500).json("Server error");
     }
   } else {
-    res.status(401).json("Invalid long url");
+    res.status(401).json("Invalid original url");
   }
 });
 
