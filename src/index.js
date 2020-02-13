@@ -17,7 +17,6 @@ db.sync()
   });
 
 app.use("/", require("./routes/index"));
-app.use("/api/url/", require("./routes/url"));
 
 app.listen(process.env.PORT, () => {
   console.log(`Listening to http://localhost:${process.env.PORT}`);
