@@ -49,6 +49,7 @@ router.post("/shorten", async (req, res) => {
         });
 
         await url.save();
+        console.log(url);
 
         res.json({
           original_link: url.original_link,
