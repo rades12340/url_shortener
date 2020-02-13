@@ -6,7 +6,7 @@ const Url = require("../models/Url");
 router.get("/:code", async (req, res) => {
   console.log("CODE", req.params.code);
   try {
-    const url = await Url.findOne({ urlCode: req.params.code });
+    const url = await Url.findOne({ where: { urlCode: req.params.code } });
     console.log(url);
     if (url) {
       return res.redirect(url.longUrl);
