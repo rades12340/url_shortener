@@ -6,12 +6,11 @@ const router = express.Router();
 const Url = require("../models/Url");
 
 router.get("/:code", async (req, res) => {
-  console.log("CODE", req.params.code);
   try {
     const url = await Url.findOne({ where: { urlCode: req.params.code } });
     console.log(url);
     if (url) {
-      return res.redirect(url.longUrl);
+      return res.redirect(url.original_link);
     } else {
       return res.status(404).json("No url found");
     }
@@ -22,7 +21,7 @@ router.get("/:code", async (req, res) => {
 });
 
 router.post("/shorten", async (req, res) => {
-  const { longUrl } = req.body;
+  const { original_link } = req.body;
   const baseUrl = process.env.BASE_URL;
 
   // Check base url
@@ -34,24 +33,27 @@ router.post("/shorten", async (req, res) => {
   const urlCode = shortid.generate();
 
   // Check long url
-  if (validUrl.isUri(longUrl)) {
+  if (validUrl.isUri(original_link)) {
     try {
-      let url = await Url.findOne({ where: { longUrl } });
+      let url = await Url.findOne({ where: { original_link } });
 
       if (url) {
         res.json(url);
       } else {
-        const shortUrl = baseUrl + "/" + urlCode;
+        const short_link = baseUrl + "/" + urlCode;
 
         url = new Url({
-          longUrl,
-          shortUrl,
+          original_link,
+          short_link,
           urlCode
         });
 
         await url.save();
 
-        res.json(url);
+        res.json({
+          original_link: url.original_link,
+          short_link: url.short_link
+        });
       }
     } catch (err) {
       console.error(err);

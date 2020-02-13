@@ -23,17 +23,17 @@ router.post("/shorten", async (req, res) => {
       if (url) {
         res.json(url);
       } else {
-        const shortUrl = baseUrl + "/" + urlCode;
+        const short_link = baseUrl + "/" + urlCode;
 
         url = new Url({
           longUrl,
-          shortUrl,
+          short_link,
           urlCode
         });
 
         await url.save();
 
-        res.json(url);
+        res.json({});
       }
     } catch (err) {
       console.error(err);
