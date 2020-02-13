@@ -6,8 +6,8 @@ class Url extends Model {}
 Url.init(
   {
     urlCode: Sequelize.STRING,
-    longUrl: Sequelize.STRING(1234),
-    shortUrl: Sequelize.STRING
+    original_link: Sequelize.STRING(1234),
+    short_link: Sequelize.STRING
   },
   { sequelize, modelName: "url" }
 );

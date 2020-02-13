@@ -42,13 +42,12 @@ router.post("/shorten", async (req, res) => {
       } else {
         const short_link = baseUrl + "/" + urlCode;
 
-        url = new Url({
+        url = await Url.create({
           original_link,
           short_link,
           urlCode
         });
 
-        await url.save();
         console.log(url);
 
         res.json({

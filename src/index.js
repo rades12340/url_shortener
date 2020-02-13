@@ -18,6 +18,6 @@ db.sync()
 
 app.use("/", require("./routes/index"));
 
-app.listen(process.env.PORT, () => {
-  console.log(`Listening to http://localhost:${process.env.PORT}`);
+app.listen(process.env.PORT || 5000, () => {
+  console.log(`Listening to http://localhost:${process.env.PORT || 5000}`);
 });
